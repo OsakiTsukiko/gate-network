@@ -13,7 +13,7 @@ export default class Gate {
   password: string;
   label: string;
 
-  isReady: boolean = false;
+  ready: boolean = false;
 
   instance: mf.Bot;
 
@@ -38,6 +38,8 @@ export default class Gate {
     });
 
     this.instance.on("spawn", this.onSpawn.bind(this));
+    this.instance.on("kicked", this.error.bind(this));
+    this.instance.on("error", this.error.bind(this));
   }
 
   async onSpawn(): Promise<void> {
@@ -52,7 +54,7 @@ export default class Gate {
       // lobby identifiers
       // these might change in the future
 
-      this.isReady = false;
+      this.ready = false;
 
       await this.instance.waitForTicks(20 * 1); // wait 1 sec
       this.instance.chat(`/l ${this.password}`); // log in
@@ -72,8 +74,9 @@ export default class Gate {
       // these might change in the future
 
       await this.instance.waitForTicks(20 * 1); // wait 1 sec
-      this.isReady = true; // on anarchy
+      this.ready = true; // on anarchy
     } else {
+      this.ready = false;
       this.error("I am lost in a world I don't know!");
     }
   }
@@ -84,5 +87,9 @@ export default class Gate {
 
   error(message: any): void {
     console.error(`[${this.username}]: `, message);
+  }
+
+  isReady(): boolean {
+    return this.ready; // no mutex should be required
   }
 }
