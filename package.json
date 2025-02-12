@@ -6,6 +6,9 @@
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "mineflayer": "^4.26.0"
   }
 }
